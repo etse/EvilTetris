@@ -18,14 +18,15 @@ class Tetris:
         pygame.display.set_caption('Evil Tetris') 
         self.screen = pygame.display.get_surface()
         self._font = pygame.font.SysFont("Times new roman", 20)
-        self.board = Board()
-        self.block = None
-        self.notNext = None
+
         self._run()
         
     def _run(self):
+        self.board = Board()
+        self.block = None
+        self.notNext = None
         self._running = True
-        frameCount = 0
+        frameCount = 1
         downCount = 0
         self.score = 0
         
@@ -47,7 +48,7 @@ class Tetris:
                         self.block = self.getNextBlock()
                         rows = self.board.removeRows()
                         if rows > 0:
-                            self.score += rows ** 2
+                            self.addScore(rows)
             else:
                 self.block = self.getNextBlock()
                 
@@ -76,18 +77,19 @@ class Tetris:
                 self.board.addBlock(self.block)
                 self.block = self.getNextBlock()
                 rows = self.board.removeRows()
+                if rows > 0:
+                    self.addScore(rows)
         
     def onFinish(self):
         pygame.display.quit()
         pygame.quit()
         
+    def addScore(self, rows):
+        self.score += (rows ** 2) + self.speed
+        self.speed = 1 + int(self.score / 15)
+        
     def getNextBlock(self):
-        blockNum = 10000
-        for x in xrange(2):
-            newNum = random.randrange(0, len(self.allowedBlocks)-2)
-            if newNum < blockNum:
-                blockNum = newNum
-                
+        blockNum = random.randrange(0, len(self.allowedBlocks)-2)                
         self.allowedBlocks = sorted(self.allowedBlocks, key=lambda x: x(self.board).getFitness())
         self.notNext = self.allowedBlocks[-1](self.board)
         self.notNext._y = 5
