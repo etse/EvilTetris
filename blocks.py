@@ -7,6 +7,7 @@ class Block:
         self._y = 0
         self._board = board
         self.color = (255, 0, 255)
+        self.initialFit = 10
     
     def __str__(self):
         return "A blank block"
@@ -54,18 +55,20 @@ class Block:
     def getFitness(self):
         bestCost = -1000
         for r in xrange(4):
-            self._x = 0
             for x in xrange(10):
-                self.moveRight()
+                self._y = 1
+                self._x = x
+                if not self._testPossible(self.layout, self._x, self._y):
+                    continue
                 self.moveToBottom()
                 cost = self._board.getBadness(self)
                 
                 if cost > bestCost:
                     bestCost = cost
-                                        
-            self._y = 1
+            self._y = 2
+            self._x = 5
             self.rotate()
-        return bestCost
+        return bestCost + self.initialFit
     
     def printLayout(self):
         for row in self.layout:
@@ -89,6 +92,7 @@ class IBlock(Block):
         self.layout[1][2] = 1
         self.layout[1][3] = 1
         self.color = (0, 255, 255)
+        self.initialFit = 14
         
     def __str__(self):
         return "An I block"
@@ -103,6 +107,7 @@ class SquereBlock(Block):
         Block.__init__(self, board)
         self.layout = [[1 for x in xrange(2)] for y in xrange(2)]
         self.color = (90, 90, 230)
+        self.initialFit = 13
         
     def __str__(self):
         return "A squere block"
@@ -139,6 +144,7 @@ class TBlock(Block):
         self.layout[1][1] = 1
         self.layout[2][1] = 1
         self.color = (255, 255, 255)
+        self.initialFit = 12
         
     def __str__(self):
         return "A T block"
@@ -151,6 +157,7 @@ class LBlock(Block):
         self.layout[1][2] = 1
         self.layout[2][2] = 1
         self.color = (120, 170, 150)
+        self.initialFit = 11
         
     def __str__(self):
         return "A L block"
@@ -161,6 +168,7 @@ class LInverseBlock(LBlock):
         self.layout[2][2] = 0
         self.layout[2][0] = 1
         self.color = (50, 170, 255)
+        self.initialFit = 11
         
     def __str__(self):
         return "An inversed L block"

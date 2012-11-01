@@ -89,7 +89,7 @@ class Tetris:
         self.speed = 1 + int(self.score / 15)
         
     def getNextBlock(self):
-        blockNum = random.randrange(0, len(self.allowedBlocks)-2)                
+        blockNum = random.randrange(0, len(self.allowedBlocks)-2)       
         self.allowedBlocks = sorted(self.allowedBlocks, key=lambda x: x(self.board).getFitness())
         self.notNext = self.allowedBlocks[-1](self.board)
         self.notNext._y = 5

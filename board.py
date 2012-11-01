@@ -58,7 +58,7 @@ class Board:
                     if self.getBrick(x, y+1) is None:
                         count -= 1
                         
-        count += 5 * self.getNumRemoves()                
+        count += 20 * self.getNumRemoves()                
         self._board = backup                
         return count
         
