@@ -22,11 +22,15 @@ class Block:
         if self._testPossible(self.layout, self._x+1, self._y):
             self._x += 1
     
-    def moveDown(self, step=0.1):
+    def moveDown(self, step=1):
         if self._testPossible(self.layout, self._x, self._y+step):
             self._y += step
             return True
         return False
+        
+    def moveToBottom(self):
+        while self.moveDown():
+            continue
     
     def rotate(self):
         newlayout = zip(*self.layout[::-1])
@@ -38,7 +42,7 @@ class Block:
             for y in xrange(len(self.layout[0])):
                 if layout[x][y] == 0 or posy+y <= 0:
                     continue
-                brick = self._board.getBrick(posx+x, posy+y+1)
+                brick = self._board.getBrick(posx+x, posy+y)
                 
                 if brick == False:
                     return False     
@@ -48,7 +52,20 @@ class Block:
         return True
     
     def getFitness(self):
-        return 10
+        bestCost = -1000
+        for r in xrange(4):
+            self._x = 0
+            for x in xrange(10):
+                self.moveRight()
+                self.moveToBottom()
+                cost = self._board.getBadness(self)
+                
+                if cost > bestCost:
+                    bestCost = cost
+                                        
+            self._y = 1
+            self.rotate()
+        return bestCost
     
     def printLayout(self):
         for row in self.layout:
